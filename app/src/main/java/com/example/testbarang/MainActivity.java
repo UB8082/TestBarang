@@ -21,6 +21,13 @@ private Button bLihat;
             public void onClick(View view) {
                 startActivity(TambahData.getActIntent(MainActivity.this));
             }
+
+        });
+        bLihat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(LihatBarang.getActIntent(MainActivity.this));
+            }
         });
     }
 }

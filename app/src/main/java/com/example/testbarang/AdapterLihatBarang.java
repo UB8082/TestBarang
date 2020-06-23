@@ -1,4 +1,9 @@
 package com.example.testbarang;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +21,8 @@ public class AdapterLihatBarang extends
          */
         daftarBarang = barangs;
         context = ctx;
+        FirebaseDataListener listener;
+
     }
     class ViewHolder extends RecyclerView.ViewHolder {
         /**
@@ -57,10 +64,49 @@ public class AdapterLihatBarang extends
         });
         holder.tvTitle.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public boolean onLongClick(final View view) {
                 /**
                  * untuk latihan Selanjutnya ,fungsi Delete dan Update data
                  */
+
+
+                final String[] action = {"Update", "Delete"};
+                AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
+                alert.setItems(action,  new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int i) {
+                        switch (i){
+                            case 0:
+                        /*
+                          Berpindah Activity pada halaman layout updateData
+
+                          dan mengambil data pada listMahasiswa, berdasarkan posisinya
+                          untuk dikirim pada activity selanjutnya
+                        */
+                                (
+                                        new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                dialog.dismiss();
+                                                context.startActivity(updateData.intent((Activity) context).putExtra("data", daftarBarang.get(position)));
+                                            }
+                                        }
+                                );
+                            case 1:
+                                //Pembahasan selanjutnya mengenai fungsi Delete
+
+                                /**
+                                 *  Kodingan untuk Delete data (memanggil interface delete data)
+                                 */
+                                dialog.dismiss();
+                                FirebaseDataListener.onDeleteData(daftarBarang.get(position), position);
+                                break;
+                        }
+                    }
+                });
+                alert.create();
+                alert.show();
+
                 return true;
             }
         });
@@ -73,4 +119,8 @@ public class AdapterLihatBarang extends
          */
         return daftarBarang.size();
     }
+    public interface FirebaseDataListener{
+        static void onDeleteData(Barang barang, int position);
+    }
+
 }
